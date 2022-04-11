@@ -58,7 +58,7 @@ def get_transform(exp_id):
             transforms.Normalize((0.5), (0.5))
             ])
 
-    if exp_id == 2:
+    elif exp_id == 2:
         transform = transforms.Compose(
             [
             transforms.Grayscale(3),
@@ -76,7 +76,7 @@ def get_trainset(root, exp_id, transform):
     if exp_id == 1:
         trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
 
-    if exp_id == 2:
+    elif exp_id == 2:
         trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
 
     else:
