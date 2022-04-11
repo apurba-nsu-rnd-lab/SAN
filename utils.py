@@ -1,5 +1,6 @@
 import random
-import torch
+import torchvision
+from torchvision import transforms
 
 
 def generate_task_class_list(n_cls, n_task, n_cls_per_task, verbose):
@@ -45,3 +46,40 @@ def get_task_class_list(exp_id):
         raise Exception('Invalid Experiment ID.')
     
     return task_class_list
+
+
+def get_transform(exp_id):
+    # 5-split-MNIST
+    if exp_id == 1:
+        transform = transforms.Compose(
+            [
+            transforms.Grayscale(1),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5), (0.5))
+            ])
+
+    if exp_id == 2:
+        transform = transforms.Compose(
+            [
+            transforms.Grayscale(3),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
+            ])
+
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return transform
+
+
+def get_trainset(root, exp_id, transform):
+    if exp_id == 1:
+        trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
+
+    if exp_id == 2:
+        trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
+
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return trainset

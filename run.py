@@ -24,19 +24,14 @@ start_time = datetime.datetime.now().replace(microsecond=0)
 # create task list and shuffle using random seed 1
 task_class_list = utils.get_task_class_list(exp_id=args.experiment)
 
-transform = transforms.Compose(
-    [
-     transforms.Grayscale(1),
-     transforms.ToTensor(),
-     transforms.Normalize((0.5), (0.5))
-    ])
+transform = utils.get_transform(exp_id=args.experiment)
 
 batch_size = 32
 
 root = os.path.join(os.getcwd(), 'datasets')
 if not os.path.exists(root): os.makedirs(root)
     
-trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
+trainset = utils.get_trainset(root=root, exp_id=args.experiment, transform=transform)
 
 all_accuracy = []
 
