@@ -12,12 +12,17 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epoch", default=60, type=int, help="number of epochs per task")
 parser.add_argument("-lr", default=0.001, type=float, help="learning rate for training")
 parser.add_argument("-r", "--run", default=3, type=int, help="number of run")
+parser.add_argument("-exp", "--experiment", default="1", type=int, help="id of the experiment.")
+
+# 1. 5-split-mnist
+# 2. 20-split-cifar100
+
 args = parser.parse_args()
 
 start_time = datetime.datetime.now().replace(microsecond=0)
 
 # create task list and shuffle using random seed 1
-task_class_list = utils.generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
+task_class_list = utils.get_task_class_list(exp_id=args.experiment)
 
 transform = transforms.Compose(
     [
