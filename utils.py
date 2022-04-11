@@ -1,5 +1,13 @@
 import random
-import torch
+import torchvision
+from torchvision import transforms
+import models
+
+exp_dict = {
+    1 : '5-split-mnist',
+    2 : '20-split-cifar100',
+    3 : ''
+}
 
 
 def generate_task_class_list(n_cls, n_task, n_cls_per_task, verbose):
@@ -34,90 +42,71 @@ def generate_split_data(dataset, task_class_list):
     return split_datasets
 
 
-def validate(task, task_class_list, testloader, device, net, epoch, criterion, test=False):
-    net.eval()
-    valid_running_loss = 0.0
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for data in testloader:
-            # images, labels = data
-            images, o_labels = data    
-            labels = []
-            for label in o_labels:
-                labels.append(task_class_list[task].index(label)) 
-            labels = torch.as_tensor(labels)
-
-            images, labels = images.to(device), labels.to(device)
-            outputs = net(images)
-            loss = criterion(outputs, labels)
-            _, predicted = torch.max(outputs.data, 1)
-            
-            valid_running_loss += loss.item()
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-            
-    epoch_loss = valid_running_loss/len(testloader)
-    accuracy = 100 * correct / total
-
-    if test:
-        print('Test_loss: {test_l: .4f}, Test_Accuracy: {test_a: .2f}'.format(
-        test_l=epoch_loss, test_a=accuracy))
+def get_task_class_list(exp_id):
+    # 5-split-MNIST
+    if exp_id == 1:
+        task_class_list = generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
+    # 20-split-MNIST
+    elif exp_id == 2:
+        task_class_list = generate_task_class_list(n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
     else:
-        print('Epoch: {}, Valid_loss: {vl: .4f}, Valid_Accuracy: {va: .2f}'.format(
-        epoch+1, vl=epoch_loss, va=accuracy))
-        
-    return epoch_loss, accuracy
-
-
-def train(run, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer):
-    print()
-    print()
-    print("**************** RUN {}, TASK {} ***************".format(run+1, task+1))
-
-    best_val_loss = float('inf')
-    for epoch in range(n_epoch):  
-        net.train()
-        net.to(device)
-        running_loss = 0.0
-        total = 0
-        correct = 0
-        for i, data in enumerate(trainloader):
-            inputs, o_labels = data 
-            labels = [] 
-            for label in o_labels:
-                labels.append(task_class_list[task].index(label))  #get current index of the class
-            labels = torch.as_tensor(labels)
-            inputs, labels = inputs.to(device), labels.to(device)
-
-            optimizer.zero_grad()
-
-            outputs = net(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
-
-            running_loss += loss.item()
-            total += labels.size(0)
-            _, predicted = torch.max(outputs.data, 1)
-            correct += (predicted == labels).sum().item()
-
-        epoch_loss = running_loss/len(trainloader)
-        accuracy = 100 * correct / total
-        print('Epoch: {}, Train_loss: {tl: .4f}, Train_Accuracy: {ta: .2f}'.format(
-                    epoch+1, tl=epoch_loss, ta=accuracy)
-            )
-        
-        # validate and save the best model
-        val_loss, val_acc = validate(task, task_class_list, validationloader, device, net, epoch, criterion, test=False)
-        
-        
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            PATH = './ckpts/task{}.pth'.format(task+1)
-            torch.save(net.state_dict(), PATH)
-            print('Best Validation result in Epoch: ', epoch+1)
-        print()
-
-
+        raise Exception('Invalid Experiment ID.')
     
+    return task_class_list
+
+
+def get_transform(exp_id):
+    # 5-split-MNIST
+    if exp_id == 1:
+        transform = transforms.Compose(
+            [
+            transforms.Grayscale(1),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5), (0.5))
+            ])
+
+    elif exp_id == 2:
+        transform = transforms.Compose(
+            [
+            transforms.Grayscale(3),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
+            ])
+
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return transform
+
+
+def get_trainset(root, exp_id, transform):
+    if exp_id == 1:
+        trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
+    elif exp_id == 2:
+        trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return trainset
+
+
+def get_testset(root, exp_id, transform):
+    if exp_id == 1:
+        testset = torchvision.datasets.MNIST(root=root,train=False, download=True, transform=transform)
+    elif exp_id == 2:
+        testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return testset
+
+
+def get_model(exp_id):
+    if exp_id == 1:
+        model = models.EquivalentNetMNIST()
+    elif exp_id == 2:
+        model = models.TwentySplit_CIFAR100()
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return model

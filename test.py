@@ -1,27 +1,23 @@
 import os
+import argparse
 import torch
 import torch.nn as nn
 import torchvision
 from torchvision import transforms
-import utils, model
+import utils, engine, models
 
 
-def run_test():
+def run_test(exp_id):
     all_acc = []
     # create 20 split and assign classes to each task(split)
-    task_class_list = utils.generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=False)
+    task_class_list = utils.get_task_class_list(exp_id)
 
     batch_size = 32
 
-    transform = transforms.Compose(
-        [
-         transforms.Grayscale(1),
-         transforms.ToTensor(),
-         transforms.Normalize((0.5), (0.5))
-        ])
+    transform = utils.get_transform(exp_id=exp_id)
 
     root = os.path.join(os.getcwd(), 'datasets')
-    testset = torchvision.datasets.MNIST(root=root, train=False, download=True, transform=transform)
+    testset = utils.get_testset(root=root, exp_id=exp_id, transform=transform)
 
     # generate split data
     split_test_datasets = utils.generate_split_data(testset, task_class_list)
@@ -34,12 +30,12 @@ def run_test():
 
     for task in range(len(task_class_list)):
         print("Task:", task+1)
-        PATH = "ckpts/task{}.pth".format(task+1)
-        net = model.EquivalentNetMNIST().to(device)
+        PATH = "ckpts/{}/task{}.pth".format(utils.exp_dict[exp_id], task+1)
+        net = utils.get_model(exp_id).to(device)
         net.load_state_dict(torch.load(PATH, map_location=device))
         net.eval()
         testloader = torch.utils.data.DataLoader(split_test_datasets[task], batch_size=batch_size, shuffle=False, num_workers=2)
-        task_loss, task_acc = utils.validate(task, task_class_list, testloader, device, net, 0, criterion, test=True)
+        task_loss, task_acc = engine.validate(task, task_class_list, testloader, device, net, 0, criterion, test=True)
         total_accuracy += task_acc
         all_acc.append(task_acc)
 
@@ -52,4 +48,8 @@ def run_test():
     return avg_accuracy
 
 if __name__ =='__main__':
-    run_test()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-exp", "--experiment", default=1, type=int, help="id of the experiment.")
+    args = parser.parse_args()
+    
+    run_test(exp_id=args.experiment)
