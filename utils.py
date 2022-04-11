@@ -3,6 +3,12 @@ import torchvision
 from torchvision import transforms
 import models
 
+exp_dict = {
+    1 : '5-split-mnist',
+    2 : '20-split-cifar100',
+    3 : ''
+}
+
 
 def generate_task_class_list(n_cls, n_task, n_cls_per_task, verbose):
     # create task list and shuffle using random seed 1

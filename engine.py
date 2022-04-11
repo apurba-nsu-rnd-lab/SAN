@@ -1,4 +1,5 @@
 import torch
+from utils import exp_dict
 
 def validate(task, task_class_list, testloader, device, net, epoch, criterion, test=False):
     net.eval()
@@ -36,7 +37,7 @@ def validate(task, task_class_list, testloader, device, net, epoch, criterion, t
     return epoch_loss, accuracy
 
 
-def train(run, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer):
+def train(run, exp_id, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer):
     print()
     print()
     print("**************** RUN {}, TASK {} ***************".format(run+1, task+1))
@@ -80,7 +81,7 @@ def train(run, task, task_class_list, n_epoch, trainloader, validationloader, de
         
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            PATH = './ckpts/task{}.pth'.format(task+1)
+            PATH = './ckpts/{}/task{}.pth'.format(exp_dict[exp_id], task+1)
             torch.save(net.state_dict(), PATH)
             print('Best Validation result in Epoch: ', epoch+1)
         print()

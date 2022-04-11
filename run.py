@@ -13,10 +13,6 @@ parser.add_argument("-e", "--epoch", default=60, type=int, help="number of epoch
 parser.add_argument("-lr", default=0.001, type=float, help="learning rate for training")
 parser.add_argument("-r", "--run", default=3, type=int, help="number of run")
 parser.add_argument("-exp", "--experiment", default=1, type=int, help="id of the experiment.")
-
-# 1. 5-split-mnist
-# 2. 20-split-cifar100
-
 args = parser.parse_args()
 
 start_time = datetime.datetime.now().replace(microsecond=0)
@@ -50,7 +46,7 @@ for run in range(args.run):
 
     # device, model/net, 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    net = models.EquivalentNetMNIST()
+    net = utils.get_model(exp_id=args.experiment)
 
     # for each task
     for task in range(len(task_class_list)):
@@ -58,7 +54,7 @@ for run in range(args.run):
             net = models.EquivalentNetMNIST()
         else:
             try:
-                PATH = "./ckpts/task1.pth"
+                PATH = "./ckpts/{}/task1.pth".format(utils.exp_dict[args.experiment])
                 net = models.EquivalentNetMNIST()
                 net.load_state_dict(torch.load(PATH, map_location=device))
 
@@ -83,7 +79,7 @@ for run in range(args.run):
 
         # train model
         n_epoch = args.epoch
-        engine.train(run, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer)
+        engine.train(run, args.experiment, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer)
         
     run_accuracy = run_test()
     all_accuracy.append(run_accuracy)
