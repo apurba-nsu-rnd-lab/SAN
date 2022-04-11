@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision
 import torch.optim as optim
 from torchvision import transforms
-import utils, model
+import utils, engine, model
 import math, random, argparse, statistics, datetime
 from test import run_test
 
@@ -83,7 +83,7 @@ for run in range(args.run):
 
         # train model
         n_epoch = args.epoch
-        utils.train(run, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer)
+        engine.train(run, task, task_class_list, n_epoch, trainloader, validationloader, device, net, criterion, optimizer)
         
     run_accuracy = run_test()
     all_accuracy.append(run_accuracy)
