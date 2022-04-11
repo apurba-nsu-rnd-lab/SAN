@@ -41,7 +41,7 @@ for run in range(args.run):
     split_train_datasets = utils.generate_split_data(train_split, task_class_list)
     split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
 
-    ckpts_dir = os.path.join(os.getcwd(), 'ckpts')
+    ckpts_dir = os.path.join(os.getcwd(), "ckpts/{}".format(utils.exp_dict[args.experiment]))
     if not os.path.exists(ckpts_dir): os.makedirs(ckpts_dir)
 
     # device, model/net, 
