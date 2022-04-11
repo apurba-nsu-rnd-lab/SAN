@@ -82,23 +82,30 @@ def get_transform(exp_id):
 def get_trainset(root, exp_id, transform):
     if exp_id == 1:
         trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
-
     elif exp_id == 2:
         trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
-
     else:
         raise Exception('Invalid Experiment ID.')
 
     return trainset
 
 
+def get_testset(root, exp_id, transform):
+    if exp_id == 1:
+        testset = torchvision.datasets.MNIST(root=root,train=False, download=True, transform=transform)
+    elif exp_id == 2:
+        testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return testset
+
+
 def get_model(exp_id):
     if exp_id == 1:
         model = models.EquivalentNetMNIST()
-
     elif exp_id == 2:
         model = models.TwentySplit_CIFAR100()
-
     else:
         raise Exception('Invalid Experiment ID.')
 
