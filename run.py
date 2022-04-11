@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision
 import torch.optim as optim
 from torchvision import transforms
-import utils, engine, model
+import utils, engine, models
 import math, random, argparse, statistics, datetime
 from test import run_test
 
@@ -50,16 +50,16 @@ for run in range(args.run):
 
     # device, model/net, 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    net = model.EquivalentNetMNIST()
+    net = models.EquivalentNetMNIST()
 
     # for each task
     for task in range(len(task_class_list)):
         if task==0:
-            net = model.EquivalentNetMNIST()
+            net = models.EquivalentNetMNIST()
         else:
             try:
                 PATH = "./ckpts/task1.pth"
-                net = model.EquivalentNetMNIST()
+                net = models.EquivalentNetMNIST()
                 net.load_state_dict(torch.load(PATH, map_location=device))
 
                 for p in net.backbone.parameters():

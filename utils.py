@@ -1,6 +1,7 @@
 import random
 import torchvision
 from torchvision import transforms
+import models
 
 
 def generate_task_class_list(n_cls, n_task, n_cls_per_task, verbose):
@@ -83,3 +84,16 @@ def get_trainset(root, exp_id, transform):
         raise Exception('Invalid Experiment ID.')
 
     return trainset
+
+
+def get_model(exp_id):
+    if exp_id == 1:
+        model = models.EquivalentNetMNIST()
+
+    elif exp_id == 2:
+        model = models.TwentySplit_CIFAR100()
+
+    else:
+        raise Exception('Invalid Experiment ID.')
+
+    return model

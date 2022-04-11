@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torchvision
 from torchvision import transforms
-import utils, engine, model
+import utils, engine, models
 
 
 def run_test():
@@ -35,7 +35,7 @@ def run_test():
     for task in range(len(task_class_list)):
         print("Task:", task+1)
         PATH = "ckpts/task{}.pth".format(task+1)
-        net = model.EquivalentNetMNIST().to(device)
+        net = models.EquivalentNetMNIST().to(device)
         net.load_state_dict(torch.load(PATH, map_location=device))
         net.eval()
         testloader = torch.utils.data.DataLoader(split_test_datasets[task], batch_size=batch_size, shuffle=False, num_workers=2)
