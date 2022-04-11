@@ -36,10 +36,10 @@ def generate_split_data(dataset, task_class_list):
 
 def get_task_class_list(exp_id):
     # 5-split-MNIST
-    if exp_id == '1':
+    if exp_id == 1:
         task_class_list = generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
     # 20-split-MNIST
-    elif exp_id == '2':
+    elif exp_id == 2:
         task_class_list = generate_task_class_list(n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
     else:
         raise Exception('Invalid Experiment ID.')
