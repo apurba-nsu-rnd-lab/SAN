@@ -51,11 +51,11 @@ for run in range(args.run):
     # for each task
     for task in range(len(task_class_list)):
         if task==0:
-            net = models.EquivalentNetMNIST()
+            net = utils.get_model(exp_id=args.experiment)
         else:
             try:
                 PATH = "./ckpts/{}/task1.pth".format(utils.exp_dict[args.experiment])
-                net = models.EquivalentNetMNIST()
+                net = utils.get_model(exp_id=args.experiment)
                 net.load_state_dict(torch.load(PATH, map_location=device))
 
                 for p in net.backbone.parameters():

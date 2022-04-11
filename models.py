@@ -48,7 +48,7 @@ class TwentySplit_CIFAR100(torch.nn.Module):
     def __init__(self):
         super(TwentySplit_CIFAR100, self).__init__()
         
-        self.features = nn.Sequential(
+        self.backbone = nn.Sequential(
             Conv2d(3, 64, kernel_size=(3, 3)),
             ReLU(inplace=True),
             Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
@@ -56,6 +56,9 @@ class TwentySplit_CIFAR100(torch.nn.Module):
             MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
             Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             ReLU(inplace=True),
+        )
+        
+        self.features = nn.Sequential(
             Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)),
             ReLU(inplace=True),
             MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False),
@@ -83,7 +86,8 @@ class TwentySplit_CIFAR100(torch.nn.Module):
         
     def forward(self, x):
         x = x.view_as(x)
-        h = self.features(x)
+        h = self.backbone(x)
+        h = self.features(h)
         h = self.avgpool(h)
         h = h.view(x.size(0), -1)
         h = self.classifier(h)
