@@ -1,4 +1,7 @@
+import math
+import os
 import random
+import torch
 import torchvision
 from torchvision import transforms
 import models
@@ -6,7 +9,7 @@ import models
 exp_dict = {
     1 : '5-split-mnist',
     2 : '20-split-cifar100',
-    3 : ''
+    3 : '20-split-miniimagenet'
 }
 
 
@@ -79,15 +82,27 @@ def get_transform(exp_id):
     return transform
 
 
-def get_trainset(root, exp_id, transform):
+def split_to_train_val(trainset, val_ratio=0.15):
+    split = val_ratio 
+    train_split, valid_split = torch.utils.data.random_split(
+        trainset, [math.ceil(len(trainset)*(1-split)), math.floor(len(trainset)*split)]
+    )
+    return train_split, valid_split
+
+
+def get_train_and_validation_set(root, val_ratio, exp_id, transform):
     if exp_id == 1:
         trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
+        train_split, valid_split = split_to_train_val(trainset)
     elif exp_id == 2:
         trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
+        train_split, valid_split = split_to_train_val(trainset)
+    elif exp_id == 3:
+        pass
     else:
         raise Exception('Invalid Experiment ID.')
 
-    return trainset
+    return train_split, valid_split
 
 
 def get_testset(root, exp_id, transform):
