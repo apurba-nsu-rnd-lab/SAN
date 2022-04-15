@@ -4,7 +4,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-import models
+import models, datasets
 
 exp_dict = {
     1 : '5-split-mnist',
@@ -50,7 +50,7 @@ def get_task_class_list(exp_id):
     if exp_id == 1:
         task_class_list = generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
     # 20-split-MNIST
-    elif exp_id == 2:
+    elif exp_id == 2 or exp_id == 3:
         task_class_list = generate_task_class_list(n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
     else:
         raise Exception('Invalid Experiment ID.')
@@ -76,6 +76,14 @@ def get_transform(exp_id):
             transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
             ])
 
+    elif exp_id == 3:
+        transform = transforms.Compose(
+            [
+            transforms.Grayscale(3),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            ])
+
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -98,7 +106,8 @@ def get_train_and_validation_set(root, val_ratio, exp_id, transform):
         trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
         train_split, valid_split = split_to_train_val(trainset)
     elif exp_id == 3:
-        pass
+        trainset = datasets.MiniImagenetDataset(root=root, mode='train')
+        train_split, valid_split = split_to_train_val(trainset)
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -110,6 +119,8 @@ def get_testset(root, exp_id, transform):
         testset = torchvision.datasets.MNIST(root=root,train=False, download=True, transform=transform)
     elif exp_id == 2:
         testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
+    elif exp_id ==3:
+        testset = datasets.MiniImagenetDataset(root=root, mode='test')
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -121,6 +132,8 @@ def get_model(exp_id):
         model = models.EquivalentNetMNIST()
     elif exp_id == 2:
         model = models.TwentySplit_CIFAR100()
+    elif exp_id == 3:
+        model = models.TwentySplit_MiniImagenet()
     else:
         raise Exception('Invalid Experiment ID.')
 
