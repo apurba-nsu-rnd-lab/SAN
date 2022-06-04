@@ -63,25 +63,26 @@ def get_transform(exp_id):
     if exp_id == 1:
         transform = transforms.Compose(
             [
-            transforms.Grayscale(1),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5), (0.5))
+                transforms.Grayscale(1),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5), (0.5))
             ])
 
     elif exp_id == 2:
         transform = transforms.Compose(
             [
-            transforms.Grayscale(3),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
+                transforms.Grayscale(3),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
             ])
 
     elif exp_id == 3:
         transform = transforms.Compose(
             [
-            transforms.Grayscale(3),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
+                transforms.Resize((32, 32)),
+                transforms.Grayscale(3),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
             ])
 
     else:
