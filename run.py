@@ -24,20 +24,16 @@ task_class_list = utils.get_task_class_list(exp_id=exp_id)
 transform = utils.get_transform(exp_id=exp_id)
 
 batch_size = 32
+validation_ratio = 0.15
 
 root = os.path.join(os.getcwd(), 'datasets')
 if not os.path.exists(root): os.makedirs(root)
     
-trainset = utils.get_trainset(root=root, exp_id=exp_id, transform=transform)
+train_split, valid_split = utils.get_train_and_validation_set(root=root, val_ratio=validation_ratio, exp_id=exp_id, transform=transform)
 
 all_accuracy = []
 
 for run in range(args.run):
-    split = 0.15
-    train_split, valid_split = torch.utils.data.random_split(
-        trainset, [math.ceil(len(trainset)*(1-split)), math.floor(len(trainset)*split)]
-    )
-
     # generate split data
     split_train_datasets = utils.generate_split_data(train_split, task_class_list)
     split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
