@@ -1,9 +1,9 @@
-import numpy as np
+import os
 import cv2
-import os
+import numpy as np
 from PIL import Image
+from torchvision import transforms
 from torch.utils.data.dataset import Dataset
-import os
 
 
 class MiniImagenetDataset(Dataset):
@@ -15,7 +15,7 @@ class MiniImagenetDataset(Dataset):
         Images, Y = [], []
 
         gt_list=[]
-        for i in range(len(self.modes)): gt_list += os.listdir(self.root+self.modes[i]) # list of all labels
+        for i in range(len(self.modes)): gt_list += os.listdir(self.root +'/'+ self.modes[i]) # list of all labels
          
         for i in range(len(self.modes)):
             mode_root = self.root + self.modes[i] + '/'
@@ -49,16 +49,18 @@ class MiniImagenetDataset(Dataset):
         img = self.data[index][0]
         try:
             img = Image.fromarray((img).astype(np.uint8))
-            label = self.data[index][1]
         except:
             img = self.data[index-1][0]                           # stupid Nonetype handling
             img = Image.fromarray((img).astype(np.uint8))
-            label = self.data[index-1][1]
+        label = self.data[index][1]
 
         if self.transform is not None:
             img = self.transform(img)
+        else:
+            transform = transforms.PILToTensor()
+            img = transform(img)
             
-        return img, label
+        return img.float(), label
 
     def train_test_split(self, data, n_train_per_class, n_test_per_class):
         train_data, test_data = [], []

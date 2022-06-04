@@ -1,5 +1,5 @@
-import math
 import os
+import math
 import random
 import torch
 import torchvision
@@ -81,7 +81,7 @@ def get_transform(exp_id):
             [
             transforms.Grayscale(3),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
             ])
 
     else:
@@ -106,7 +106,8 @@ def get_train_and_validation_set(root, val_ratio, exp_id, transform):
         trainset = torchvision.datasets.CIFAR100(root=root,train=True, download=True, transform=transform)
         train_split, valid_split = split_to_train_val(trainset)
     elif exp_id == 3:
-        trainset = datasets.MiniImagenetDataset(root=root, mode='train')
+        miniimagenet_path = os.path.join(root, 'mini-imagenet/')
+        trainset = datasets.MiniImagenetDataset(root=miniimagenet_path, mode='train')
         train_split, valid_split = split_to_train_val(trainset)
     else:
         raise Exception('Invalid Experiment ID.')
@@ -120,7 +121,7 @@ def get_testset(root, exp_id, transform):
     elif exp_id == 2:
         testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
     elif exp_id ==3:
-        testset = datasets.MiniImagenetDataset(root=root, mode='test')
+        testset = datasets.MiniImagenetDataset(root=os.path.join(root, 'mini-imagenet/'), mode='test')
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -134,6 +135,7 @@ def get_model(exp_id):
         model = models.TwentySplit_CIFAR100()
     elif exp_id == 3:
         model = models.TwentySplit_MiniImagenet()
+        # model = models.TwentySplit_CIFAR100()
     else:
         raise Exception('Invalid Experiment ID.')
 
