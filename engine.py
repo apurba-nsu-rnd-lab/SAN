@@ -1,15 +1,27 @@
 import torch
+import numpy as np
 from utils import exp_dict
 
-def validate(task, task_class_list, testloader, device, net, epoch, criterion, test=False):
+def validate(exp_id, task, task_class_list, testloader, device, net, epoch, criterion, test=False):
     net.eval()
     valid_running_loss = 0.0
     correct = 0
     total = 0
+    if exp_id == 4:
+        rng = np.random.RandomState(42)
+        perm = rng.permutation(1*28*28)
     with torch.no_grad():
         for data in testloader:
             # images, labels = data
             images, o_labels = data    
+            #---------------------------------------------------------------------------------------
+            if exp_id==4: # for permuted MNIST
+                o_images = images # if wrong try - torch.clone(inputs)
+                images = []                
+                for img in o_images:
+                    images.append(img.reshape(-1, 784)[:, perm].reshape(-1, 28, 28))
+                images = torch.stack(images)
+            #---------------------------------------------------------------------------------------
             labels = []
             for label in o_labels:
                 labels.append(task_class_list[task].index(label)) 
@@ -49,8 +61,20 @@ def train(run, exp_id, task, task_class_list, n_epoch, trainloader, validationlo
         running_loss = 0.0
         total = 0
         correct = 0
+        if exp_id == 4:
+            rng = np.random.RandomState(42)
+            perm = rng.permutation(1*28*28)
+            
         for i, data in enumerate(trainloader):
             inputs, o_labels = data 
+            #---------------------------------------------------------------------------------------
+            if exp_id==4: # for permuted MNIST
+                o_inputs = inputs # if wrong try - torch.clone(inputs)
+                inputs = []                
+                for inp in o_inputs:
+                    inputs.append(inp.reshape(-1, 784)[:, perm].reshape(-1, 28, 28))
+                inputs = torch.stack(inputs)
+            #---------------------------------------------------------------------------------------
             labels = [] 
             for label in o_labels:
                 labels.append(task_class_list[task].index(label))  #get current index of the class
@@ -76,7 +100,7 @@ def train(run, exp_id, task, task_class_list, n_epoch, trainloader, validationlo
             )
         
         # validate and save the best model
-        val_loss, val_acc = validate(task, task_class_list, validationloader, device, net, epoch, criterion, test=False)
+        val_loss, val_acc = validate(exp_id, task, task_class_list, validationloader, device, net, epoch, criterion, test=False)
         
         
         if val_loss < best_val_loss:
