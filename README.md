@@ -19,7 +19,7 @@ For training, run the following command.
 ` python run.py `
 
 To manually input number of runs, epochs and learning rate, run the following command:   
-` python run.py -r <n_runs> -e <n_epochs> -lr <learning_rate> `
+` python run.py -exp <experiment_id> -r <n_runs> -e <n_epochs> -lr <learning_rate> `
 
 ### Test
 For test, run the following command.   
