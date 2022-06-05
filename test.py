@@ -35,7 +35,7 @@ def run_test(exp_id):
         net.load_state_dict(torch.load(PATH, map_location=device))
         net.eval()
         testloader = torch.utils.data.DataLoader(split_test_datasets[task], batch_size=batch_size, shuffle=False, num_workers=2)
-        task_loss, task_acc = engine.validate(task, task_class_list, testloader, device, net, 0, criterion, test=True)
+        task_loss, task_acc = engine.validate(exp_id, task, task_class_list, testloader, device, net, 0, criterion, test=True)
         total_accuracy += task_acc
         all_acc.append(task_acc)
 

@@ -9,13 +9,15 @@ import models, datasets
 exp_dict = {
     1 : '5-split-mnist',
     2 : '20-split-cifar100',
-    3 : '20-split-miniimagenet'
+    3 : '20-split-miniimagenet',
+    4 : 'permuted-mnist',
 }
 
 
-def generate_task_class_list(n_cls, n_task, n_cls_per_task, verbose):
+def generate_task_class_list(exp_id, n_cls, n_task, n_cls_per_task, verbose):
     # create task list and shuffle using random seed 1
     task = [x for x in range(n_cls)]
+    if exp_id==4: task = [x for x in range(n_cls)]*2
     random.Random(1).shuffle(task)
     
     task_class_list = []
@@ -46,12 +48,12 @@ def generate_split_data(dataset, task_class_list):
 
 
 def get_task_class_list(exp_id):
-    # 5-split-MNIST
     if exp_id == 1:
-        task_class_list = generate_task_class_list(n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
-    # 20-split-MNIST
+        task_class_list = generate_task_class_list(exp_id, n_cls=10, n_task=5, n_cls_per_task=2, verbose=True)
     elif exp_id == 2 or exp_id == 3:
-        task_class_list = generate_task_class_list(n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
+        task_class_list = generate_task_class_list(exp_id, n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
+    elif exp_id == 4:
+        task_class_list = generate_task_class_list(exp_id, n_cls=10, n_task=10, n_cls_per_task=2, verbose=True)
     else:
         raise Exception('Invalid Experiment ID.')
     
@@ -60,7 +62,7 @@ def get_task_class_list(exp_id):
 
 def get_transform(exp_id):
     # 5-split-MNIST
-    if exp_id == 1:
+    if exp_id == 1 or exp_id == 4:
         transform = transforms.Compose(
             [
                 transforms.Grayscale(1),
@@ -100,7 +102,7 @@ def split_to_train_val(trainset, val_ratio=0.15):
 
 
 def get_train_and_validation_set(root, val_ratio, exp_id, transform):
-    if exp_id == 1:
+    if exp_id == 1 or exp_id == 4:
         trainset = torchvision.datasets.MNIST(root=root,train=True, download=True, transform=transform)
         train_split, valid_split = split_to_train_val(trainset)
     elif exp_id == 2:
@@ -117,7 +119,7 @@ def get_train_and_validation_set(root, val_ratio, exp_id, transform):
 
 
 def get_testset(root, exp_id, transform):
-    if exp_id == 1:
+    if exp_id == 1 or exp_id == 4:
         testset = torchvision.datasets.MNIST(root=root,train=False, download=True, transform=transform)
     elif exp_id == 2:
         testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
@@ -130,7 +132,7 @@ def get_testset(root, exp_id, transform):
 
 
 def get_model(exp_id):
-    if exp_id == 1:
+    if exp_id == 1 or exp_id == 4:
         model = models.EquivalentNetMNIST()
     elif exp_id == 2:
         model = models.TwentySplit_CIFAR100()
