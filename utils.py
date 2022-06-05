@@ -132,13 +132,15 @@ def get_testset(root, exp_id, transform):
 
 
 def get_model(exp_id):
-    if exp_id == 1 or exp_id == 4:
+    if exp_id == 1:
         model = models.EquivalentNetMNIST()
     elif exp_id == 2:
         model = models.TwentySplit_CIFAR100()
     elif exp_id == 3:
         model = models.TwentySplit_MiniImagenet()
-        # model = models.TwentySplit_CIFAR100()
+    elif exp_id == 4:
+        model = models.Permuted_MNIST()
+
     else:
         raise Exception('Invalid Experiment ID.')
 
