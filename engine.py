@@ -80,22 +80,6 @@ def train(run, exp_id, task, task_class_list, n_epoch, trainloader, validationlo
                 labels.append(task_class_list[task].index(label))  #get current index of the class
             labels = torch.as_tensor(labels)
             inputs, labels = inputs.to(device), labels.to(device)
-            
-            ###################
-#              o_inputs, o_labels = data    
-#             inputs, labels = [], []
-            
-#             for inp in o_inputs:
-#                 inputs.append(inp.reshape(-1, 784)[:, perm].reshape(-1, 28, 28))
-            
-#             for label in o_labels:
-#                 labels.append(task_class_list[task].index(label))  #get current index of the class
-
-#             inputs = torch.stack(inputs)
-#             labels = torch.as_tensor(labels)
-            
-#             inputs, labels = inputs.to(device), labels.to(device)
-            ###########
 
             optimizer.zero_grad()
 
