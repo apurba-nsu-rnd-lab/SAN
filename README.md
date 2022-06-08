@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ```
 
 ### Datasets
-Download the *Mini-imagenet* and *notMNIST* datasets from [Google Drive](https://drive.google.com/drive/folders/1qRgXuuX8fvoSiAGSwn6UZYUdl65TVA24?usp=sharing).
+Download the *Mini-imagenet* and *notMNIST* datasets from [Google Drive](https://drive.google.com/drive/folders/1qRgXuuX8fvoSiAGSwn6UZYUdl65TVA24?usp=sharing). Other datasets will be automatically downloaded.
 
 ### Training
 For training, run the following command.  
