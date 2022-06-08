@@ -26,4 +26,4 @@ To manually input number of runs, epochs and learning rate, run the following co
 
 ### Test
 For test, run the following command.   
-` python test.py `
+` python test.py -exp <experiment_id>`
