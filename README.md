@@ -1,4 +1,14 @@
-# SAN-Draft
+
+<h1 align="center">
+  <br>
+    Rethinking Task-Incremental Learning Baselines
+  <br>
+</h1>
+
+<h4 align="center">Official imlpementation of the paper [ICPR 2022]</h4>
+<h3 align="left">
+    Link to the Paper - <a href="https://arxiv.org/abs/2205.11367">arXiv </a> 
+</h4>
 
 ### Prerequisites:
 - Linux-64
