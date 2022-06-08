@@ -19,7 +19,7 @@ Download the *Mini-imagenet* and *notMNIST* datasets from [Google Drive](https:/
 
 ### Training
 For training, run the following command.  
-` python run.py `
+` python run.py -exp <experiment_id>`
 
 To manually input number of runs, epochs and learning rate, run the following command:   
 ` python run.py -exp <experiment_id> -r <n_runs> -e <n_epochs> -lr <learning_rate> `
