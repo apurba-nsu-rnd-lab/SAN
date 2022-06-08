@@ -183,13 +183,13 @@ def seq_5_train_val_set(root, transform):
 
 
 def seq_5_test_set(root, transform):
-    trainsets = []
+    testsets = []
 
     # preparing testsets
-    trainsets.append(torchvision.datasets.CIFAR10(root=root, train=False, download=True, transform=transform))
-    trainsets.append(torchvision.datasets.MNIST(root=root, train=False, download=True, transform=transform))
-    trainsets.append(torchvision.datasets.FashionMNIST(root=root, train=False, download=True, transform=transform))
-    trainsets.append(torchvision.datasets.SVHN(root=root, split='test', download=True, transform=transform))
-    trainsets.append(torchvision.datasets.ImageFolder(root=os.path.join(root, 'notMNIST/Test/'), transform=transform))
+    testsets.append(torchvision.datasets.CIFAR10(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.MNIST(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.FashionMNIST(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.SVHN(root=root, split='test', download=True, transform=transform))
+    testsets.append(torchvision.datasets.ImageFolder(root=os.path.join(root, 'notMNIST/Test/'), transform=transform))
 
-    return trainsets
+    return testsets
