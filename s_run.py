@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epoch", default=60, type=int, help="number of epochs per task")
 parser.add_argument("-lr", default=0.001, type=float, help="learning rate for training")
 parser.add_argument("-r", "--run", default=3, type=int, help="number of run")
-parser.add_argument("-exp", "--experiment", default=1, type=int, help="id of the experiment.")
+parser.add_argument("-exp", "--experiment", default=5, type=int, help="id of the experiment.")
 args = parser.parse_args()
 
 exp_id = args.experiment
@@ -34,11 +34,12 @@ train_split, valid_split = utils.get_train_and_validation_set(root=root, val_rat
 all_accuracy = []
 
 for run in range(args.run):
-    # # generate split data
-    # split_train_datasets = utils.generate_split_data(train_split, task_class_list)
-    # split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
-
-    # 
+    if exp_id == 5:
+        split_train_datasets, split_validaion_datasets = train_split, valid_split
+    else:
+        # generate split data
+        split_train_datasets = utils.generate_split_data(train_split, task_class_list)
+        split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
 
     ckpts_dir = os.path.join(os.getcwd(), "ckpts/{}".format(utils.exp_dict[exp_id]))
     if not os.path.exists(ckpts_dir): os.makedirs(ckpts_dir)

@@ -55,6 +55,8 @@ def get_task_class_list(exp_id):
         task_class_list = generate_task_class_list(exp_id, n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
     elif exp_id == 4:
         task_class_list = generate_task_class_list(exp_id, n_cls=10, n_task=10, n_cls_per_task=2, verbose=True)
+    elif exp_id == 5:
+        task_class_list = [[x for x in range(10)]]*5
     else:
         raise Exception('Invalid Experiment ID.')
     
