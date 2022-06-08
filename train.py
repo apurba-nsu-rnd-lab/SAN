@@ -1,18 +1,17 @@
 import os
 import torch
 import torch.nn as nn
-import torchvision
 import torch.optim as optim
-from torchvision import transforms
-import utils, engine, models
-import math, random, argparse, statistics, datetime
+import argparse, statistics, datetime
+
+import utils, engine
 from test import run_test
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--epoch", default=60, type=int, help="number of epochs per task")
 parser.add_argument("-lr", default=0.001, type=float, help="learning rate for training")
 parser.add_argument("-r", "--run", default=3, type=int, help="number of run")
-parser.add_argument("-exp", "--experiment", default=5, type=int, help="id of the experiment.")
+parser.add_argument("-exp", "--experiment", default=1, type=int, help="id of the experiment.")
 args = parser.parse_args()
 
 exp_id = args.experiment
