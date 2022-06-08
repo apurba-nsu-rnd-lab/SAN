@@ -1,11 +1,10 @@
 import os
 import torch
 import torch.nn as nn
-import torchvision
 import torch.optim as optim
-from torchvision import transforms
-import utils, engine, models
-import math, random, argparse, statistics, datetime
+import argparse, statistics, datetime
+
+import utils, engine
 from test import run_test
 
 parser = argparse.ArgumentParser()
@@ -34,9 +33,12 @@ train_split, valid_split = utils.get_train_and_validation_set(root=root, val_rat
 all_accuracy = []
 
 for run in range(args.run):
-    # generate split data
-    split_train_datasets = utils.generate_split_data(train_split, task_class_list)
-    split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
+    if exp_id == 5:
+        split_train_datasets, split_validaion_datasets = train_split, valid_split
+    else:
+        # generate split data
+        split_train_datasets = utils.generate_split_data(train_split, task_class_list)
+        split_validaion_datasets = utils.generate_split_data(valid_split, task_class_list)
 
     ckpts_dir = os.path.join(os.getcwd(), "ckpts/{}".format(utils.exp_dict[exp_id]))
     if not os.path.exists(ckpts_dir): os.makedirs(ckpts_dir)
