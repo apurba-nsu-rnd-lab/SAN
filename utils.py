@@ -11,6 +11,7 @@ exp_dict = {
     2 : '20-split-cifar100',
     3 : '20-split-miniimagenet',
     4 : 'permuted-mnist',
+    5 : 'sequence-of-5-datasets'
 }
 
 
@@ -54,6 +55,8 @@ def get_task_class_list(exp_id):
         task_class_list = generate_task_class_list(exp_id, n_cls=100, n_task=20, n_cls_per_task=5, verbose=True)
     elif exp_id == 4:
         task_class_list = generate_task_class_list(exp_id, n_cls=10, n_task=10, n_cls_per_task=2, verbose=True)
+    elif exp_id == 5:
+        task_class_list = [[x for x in range(10)]]*5
     else:
         raise Exception('Invalid Experiment ID.')
     
@@ -87,6 +90,15 @@ def get_transform(exp_id):
                 transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761))
             ])
 
+    elif exp_id == 5:
+        transform = transforms.Compose(
+            [
+                transforms.Resize((32, 32)),
+                transforms.Grayscale(3),
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            ])
+
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -112,6 +124,8 @@ def get_train_and_validation_set(root, val_ratio, exp_id, transform):
         miniimagenet_path = os.path.join(root, 'mini-imagenet/')
         trainset = datasets.MiniImagenetDataset(root=miniimagenet_path, mode='train')
         train_split, valid_split = split_to_train_val(trainset)
+    elif exp_id == 5:
+        train_split, valid_split = seq_5_train_val_set(root=root, transform=transform) # returns list of train and valid splits
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -123,8 +137,10 @@ def get_testset(root, exp_id, transform):
         testset = torchvision.datasets.MNIST(root=root,train=False, download=True, transform=transform)
     elif exp_id == 2:
         testset = torchvision.datasets.CIFAR100(root=root,train=False, download=True, transform=transform)
-    elif exp_id ==3:
+    elif exp_id == 3:
         testset = datasets.MiniImagenetDataset(root=os.path.join(root, 'mini-imagenet/'), mode='test')
+    elif exp_id == 5:
+        testset = seq_5_test_set(root=root, transform=transform)
     else:
         raise Exception('Invalid Experiment ID.')
 
@@ -140,8 +156,40 @@ def get_model(exp_id):
         model = models.TwentySplit_MiniImagenet()
     elif exp_id == 4:
         model = models.Permuted_MNIST()
-
+    elif exp_id == 5:
+        model = models.Sequence_of_Datasets()
     else:
         raise Exception('Invalid Experiment ID.')
 
     return model
+
+
+def seq_5_train_val_set(root, transform):
+    trainsets, train_splits, valid_splits = [], [], []
+
+    # preparing datasets
+    trainsets.append(torchvision.datasets.CIFAR10(root=root, train=True, download=True, transform=transform))
+    trainsets.append(torchvision.datasets.MNIST(root=root, train=True, download=True, transform=transform))
+    trainsets.append(torchvision.datasets.FashionMNIST(root=root, train=True, download=True, transform=transform))
+    trainsets.append(torchvision.datasets.SVHN(root=root, split='train', download=True, transform=transform))
+    trainsets.append(torchvision.datasets.ImageFolder(root=os.path.join(root, 'notMNIST/Train/'), transform=transform))
+
+    for trainset in trainsets:
+        train_split, valid_split = split_to_train_val(trainset)
+        train_splits.append(train_split)
+        valid_splits.append(valid_split)
+
+    return train_splits, valid_splits
+
+
+def seq_5_test_set(root, transform):
+    testsets = []
+
+    # preparing testsets
+    testsets.append(torchvision.datasets.CIFAR10(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.MNIST(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.FashionMNIST(root=root, train=False, download=True, transform=transform))
+    testsets.append(torchvision.datasets.SVHN(root=root, split='test', download=True, transform=transform))
+    testsets.append(torchvision.datasets.ImageFolder(root=os.path.join(root, 'notMNIST/Test/'), transform=transform))
+
+    return testsets

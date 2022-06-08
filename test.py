@@ -18,9 +18,12 @@ def run_test(exp_id):
 
     root = os.path.join(os.getcwd(), 'datasets')
     testset = utils.get_testset(root=root, exp_id=exp_id, transform=transform)
-
-    # generate split data
-    split_test_datasets = utils.generate_split_data(testset, task_class_list)
+    
+    if exp_id == 5:
+        split_test_datasets = testset
+    else:
+        # generate split data
+        split_test_datasets = utils.generate_split_data(testset, task_class_list)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     criterion = nn.CrossEntropyLoss()
