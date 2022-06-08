@@ -14,6 +14,9 @@ conda activate <env>
 pip install -r requirements.txt
 ```
 
+### Datasets
+Download the datasets from the [Google Drive](https://drive.google.com/drive/folders/1qRgXuuX8fvoSiAGSwn6UZYUdl65TVA24?usp=sharing) and put them into the `datasets` directory. Other datasets will download automatically.
+
 ### Training
 For training, run the following command.  
 ` python run.py `
