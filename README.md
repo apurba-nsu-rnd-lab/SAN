@@ -42,7 +42,7 @@ For test, run the following command.
 If you wish to cite this project, feel free to use this [BibTeX](http://www.bibtex.org/) reference:
 
 ```bibtex
-@misc{Rethinking Task-Incremental Learning Baselines,
+@misc{https://doi.org/10.48550/arxiv.2205.11367,
   doi = {10.48550/ARXIV.2205.11367},
   url = {https://arxiv.org/abs/2205.11367},
   author = {Hossain, Md Sazzad and Saha, Pritom and Chowdhury, Townim Faisal and Rahman, Shafin and Rahman, Fuad and Mohammed, Nabeel},
