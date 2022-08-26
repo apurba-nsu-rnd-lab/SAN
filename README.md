@@ -1,4 +1,3 @@
-
 <h1 align="center">
   <br>
     Rethinking Task-Incremental Learning Baselines
@@ -37,3 +36,20 @@ To manually input number of runs, epochs and learning rate, run the following co
 ### Test
 For test, run the following command.   
 ` python test.py -exp <experiment_id>`
+
+## Citation
+
+If you wish to cite this project, feel free to use this [BibTeX](http://www.bibtex.org/) reference:
+
+```bibtex
+@misc{Rethinking Task-Incremental Learning Baselines,
+  doi = {10.48550/ARXIV.2205.11367},
+  url = {https://arxiv.org/abs/2205.11367},
+  author = {Hossain, Md Sazzad and Saha, Pritom and Chowdhury, Townim Faisal and Rahman, Shafin and Rahman, Fuad and Mohammed, Nabeel},
+  keywords = {Artificial Intelligence (cs.AI), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Rethinking Task-Incremental Learning Baselines},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+```
